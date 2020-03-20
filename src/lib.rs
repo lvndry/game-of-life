@@ -9,7 +9,7 @@ use wasm_bindgen::prelude::*;
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
-#[wasm_bindgen]
+// #[wasm_bindgen]
 #[repr(u8)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Cell {
@@ -26,18 +26,18 @@ impl Cell {
     }
 }
 
-#[wasm_bindgen]
+// #[wasm_bindgen]
 pub struct Universe {
     width: u32,
     height: u32,
     cells: Vec<Cell>,
 }
 
-#[wasm_bindgen]
+// #[wasm_bindgen]
 impl Universe {
     pub fn new() -> Universe {
-        let width = 64;
-        let height = 64;
+        let width = 120;
+        let height = 120;
 
         let cells = (0..width * height)
             .map(|i| {
@@ -65,8 +65,13 @@ impl Universe {
     }
 
     pub fn tick(&mut self) {
-        let mut next = self.cells.clone();
+        let _timer = Timer::new("Universe::tick");
+        let mut next = {
+            let _timer = Timer::new("Allocate next cells");
+            self.cells.clone()
+        };
 
+        let _timer = Timer::new("New generation");
         for row in 0..self.height {
             for col in 0..self.width {
                 let idx = self.get_index(row, col);
@@ -84,7 +89,7 @@ impl Universe {
                 next[idx] = next_cell;
             }
         }
-
+        let _timer = Timer::new("Free old cells");
         self.cells = next;
     }
 
@@ -162,5 +167,25 @@ impl fmt::Display for Universe {
         }
 
         Ok(())
+    }
+}
+
+extern crate web_sys;
+use web_sys::console;
+
+pub struct Timer<'a> {
+    name: &'a str,
+}
+
+impl<'a> Timer<'a> {
+    pub fn new(name: &'a str) -> Timer<'a> {
+        console::time_with_label(name);
+        Timer { name }
+    }
+}
+
+impl<'a> Drop for Timer<'a> {
+    fn drop(&mut self) {
+        console::time_end_with_label(self.name);
     }
 }

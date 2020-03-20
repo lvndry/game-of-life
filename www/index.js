@@ -1,6 +1,7 @@
 // Import the WebAssembly memory at the top of the file.
 import { memory } from "game-of-life/game_of_life_bg";
 import { Universe, Cell } from "game-of-life";
+import { fps } from "./perf";
 
 const CELL_SIZE = 5;
 const GRID_COLOR = "#CCCCCC";
@@ -16,10 +17,7 @@ const height = universe.height();
 const canvas = document.getElementById("game-of-life-canvas");
 canvas.height = (CELL_SIZE + 1) * height + 1;
 canvas.width = (CELL_SIZE + 1) * width + 1;
-
 const ctx = canvas.getContext("2d");
-
-const pre = document.getElementById("game-of-life-canvas");
 
 const drawGrid = () => {
   ctx.beginPath();
@@ -50,11 +48,32 @@ const drawCells = () => {
 
   ctx.beginPath();
 
+  // Alive cells.
+  ctx.fillStyle = ALIVE_COLOR;
   for (let row = 0; row < height; row++) {
     for (let col = 0; col < width; col++) {
       const idx = getIndex(row, col);
+      if (cells[idx] !== Cell.Alive) {
+        continue;
+      }
 
-      ctx.fillStyle = cells[idx] === Cell.Dead ? DEAD_COLOR : ALIVE_COLOR;
+      ctx.fillRect(
+        col * (CELL_SIZE + 1) + 1,
+        row * (CELL_SIZE + 1) + 1,
+        CELL_SIZE,
+        CELL_SIZE
+      );
+    }
+  }
+
+  // Dead cells.
+  ctx.fillStyle = DEAD_COLOR;
+  for (let row = 0; row < height; row++) {
+    for (let col = 0; col < width; col++) {
+      const idx = getIndex(row, col);
+      if (cells[idx] !== Cell.Dead) {
+        continue;
+      }
 
       ctx.fillRect(
         col * (CELL_SIZE + 1) + 1,
@@ -114,12 +133,13 @@ canvas.addEventListener("click", event => {
 });
 
 const renderLoop = () => {
-  pre.textContent = universe.render();
-
+  fps.render();
   drawGrid();
   drawCells();
 
-  universe.tick();
+  for (let i = 0; i < 9; ++i) {
+    universe.tick();
+  }
 
   animationId = requestAnimationFrame(renderLoop);
 };
