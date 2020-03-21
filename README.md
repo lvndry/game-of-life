@@ -13,3 +13,7 @@ cd game-of-life
 ## Credits
 
 - Based on [Rust - WASM tutorial](https://rustwasm.github.io/book/game-of-life/implementing.html?search=)
+
+## License
+
+This project is licensed under MIT License
