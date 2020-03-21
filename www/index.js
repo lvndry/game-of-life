@@ -1,6 +1,6 @@
 // Import the WebAssembly memory at the top of the file.
 import { memory } from "game-of-life/game_of_life_bg";
-import { Universe, Cell } from "game-of-life";
+import { Universe } from "game-of-life";
 import { fps } from "./perf";
 
 const CELL_SIZE = 5;
@@ -138,16 +138,28 @@ canvas.addEventListener("click", event => {
   drawCells();
 });
 
-const renderLoop = () => {
-  fps.render();
-  drawGrid();
-  drawCells();
+const range = document.getElementById("speed-range");
 
-  for (let i = 0; i < 9; ++i) {
-    universe.tick();
-  }
+range.addEventListener("change", event => {
+  timestep = (10000 * event.target.value) / 100 / 60;
+  console.log(timestep);
+});
 
+let lastTimestamp = 0;
+let timestep = 10000 / 60;
+console.log(timestep);
+
+const renderLoop = timestamp => {
   animationId = requestAnimationFrame(renderLoop);
+
+  if (timestamp - lastTimestamp < timestep) return;
+  else universe.tick();
+
+  lastTimestamp = timestamp;
+
+  fps.render();
+  drawCells();
+  drawGrid();
 };
 
 play();

@@ -5,7 +5,7 @@ Learned Rust by reimplementing [Conway's Game of life](https://en.wikipedia.org/
 ## Prerequisites
 
 - [Rust Toolchain](https://www.rust-lang.org/tools/install)
-- [wasm-paxk](https://rustwasm.github.io/wasm-pack/installer/)
+- [wasm-pack](https://rustwasm.github.io/wasm-pack/installer/)
 - [npm](https://www.npmjs.com/get-npm)
 
 ## Getting started
