@@ -1,3 +1,9 @@
+html {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+}
+
 body {
   box-sizing: border-box;
   width: 100%;
@@ -9,7 +15,7 @@ body {
 }
 
 #game-of-life-canvas {
-  padding: 32px 0;
+  padding: 18px 0 32px 0;
 }
 
 .gol_footer {
