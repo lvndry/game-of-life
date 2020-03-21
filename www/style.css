@@ -4,12 +4,18 @@ body {
   height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
 }
 
 #game-of-life-canvas {
-  margin: 32px 0;
+  padding: 32px 0;
+}
+
+.gol_footer {
+  width: 25%;
+  display: flex;
+  justify-content: space-between;
 }
 
 #fps {

@@ -11,14 +11,18 @@
       javascript in your browser.
     </noscript>
     <body>
-      <div id="fps"></div>
+      <header>
+        <button id="randomize">randomize</button>
+      </header>
       <canvas id="game-of-life-canvas"></canvas>
-      <button id="play-pause"></button>
 
-      <div>
-        <label for="speed-range">Speed</label>
-        <input type="range" id="speed-range" min="1" />
-      </div>
+      <footer class="gol_footer">
+        <button id="play-pause"></button>
+        <div class="speed">
+          <label for="speed-range">Speed</label>
+          <input type="range" id="speed-range" min="1" />
+        </div>
+      </footer>
 
       <script src="./bootstrap.js"></script>
     </body>

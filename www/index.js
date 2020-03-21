@@ -1,7 +1,6 @@
 // Import the WebAssembly memory at the top of the file.
 import { memory } from "game-of-life/game_of_life_bg";
 import { Universe } from "game-of-life";
-import { Fps } from "./perf";
 
 const CELL_SIZE = 5;
 const GRID_COLOR = "#CCCCCC";
@@ -12,8 +11,7 @@ const universe = Universe.new();
 const width = universe.width();
 const height = universe.height();
 
-// Give the canvas room for all of our cells and a 1px border
-// around each of them.
+// Give the canvas room for all of our cells and a 1px border around each of them.
 const canvas = document.getElementById("game-of-life-canvas");
 canvas.height = (CELL_SIZE + 1) * height + 1;
 canvas.width = (CELL_SIZE + 1) * width + 1;
@@ -141,11 +139,20 @@ canvas.addEventListener("click", event => {
 const range = document.getElementById("speed-range");
 
 range.addEventListener("change", event => {
-  timestep = (10000 * event.target.value) / 100 / 60;
+  timestep = (100 * event.target.value) / 60;
+});
+
+const randomize = document.getElementById("randomize");
+
+randomize.addEventListener("click", () => {
+  universe.randomize();
+
+  drawGrid();
+  drawCells();
 });
 
 let lastTimestamp = 0;
-let timestep = 10000 / 60;
+let timestep = (100 * 50) / 60;
 
 const renderLoop = timestamp => {
   animationId = requestAnimationFrame(renderLoop);
@@ -155,8 +162,6 @@ const renderLoop = timestamp => {
 
   lastTimestamp = timestamp;
 
-  const gol_fps = new Fps();
-  gol_fps.render();
   drawCells();
   drawGrid();
 };
