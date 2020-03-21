@@ -132,22 +132,25 @@ canvas.addEventListener("click", event => {
 
   universe.toggle_cell(row, col);
 
-  drawGrid();
   drawCells();
 });
 
 const range = document.getElementById("speed-range");
-
 range.addEventListener("change", event => {
   timestep = (100 * event.target.value) / 60;
 });
 
 const randomize = document.getElementById("randomize");
-
 randomize.addEventListener("click", () => {
   universe.randomize();
 
-  drawGrid();
+  drawCells();
+});
+
+const blankButton = document.getElementById("blank");
+blankButton.addEventListener("click", () => {
+  universe.blank();
+
   drawCells();
 });
 
