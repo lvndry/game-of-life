@@ -1,0 +1,22 @@
+body {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#game-of-life-canvas {
+  margin: 32px 0;
+}
+
+#fps {
+  white-space: pre;
+  font-family: monospace;
+}
+
+#speed-range {
+  direction: rtl;
+}

@@ -4,7 +4,9 @@ const path = require("path");
 module.exports = {
   entry: "./bootstrap.js",
   devServer: {
-    open: true
+    open: true,
+    liveReload: true,
+    watchContentBase: true
   },
   output: {
     path: path.resolve(__dirname, "dist"),

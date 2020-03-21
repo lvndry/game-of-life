@@ -1,11 +1,8 @@
-export const fps = new (class {
-  constructor() {
-    this.fps = document.getElementById("fps");
-    this.frames = [];
-    this.lastFrameTimeStamp = performance.now();
-  }
-
-  render() {
+export function Fps() {
+  this.fps = document.getElementById("fps");
+  this.frames = [];
+  this.lastFrameTimeStamp = performance.now();
+  this.render = function() {
     // Convert the delta time since the last frame render into a measure
     // of frames per second.
     const now = performance.now();
@@ -33,10 +30,10 @@ export const fps = new (class {
     // Render the statistics.
     this.fps.textContent = `
   Frames per Second:
-           latest = ${Math.round(fps)}
-  avg of last 100 = ${Math.round(mean)}
-  min of last 100 = ${Math.round(min)}
-  max of last 100 = ${Math.round(max)}
+  latest = ${Math.round(fps)} fps
+  avg of last 100 = ${Math.round(mean)} fps
+  min of last 100 = ${Math.round(min)} fps
+  max of last 100 = ${Math.round(max)} fps
   `.trim();
-  }
-})();
+  };
+}

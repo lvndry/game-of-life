@@ -1,7 +1,7 @@
 // Import the WebAssembly memory at the top of the file.
 import { memory } from "game-of-life/game_of_life_bg";
 import { Universe } from "game-of-life";
-import { fps } from "./perf";
+import { Fps } from "./perf";
 
 const CELL_SIZE = 5;
 const GRID_COLOR = "#CCCCCC";
@@ -142,12 +142,10 @@ const range = document.getElementById("speed-range");
 
 range.addEventListener("change", event => {
   timestep = (10000 * event.target.value) / 100 / 60;
-  console.log(timestep);
 });
 
 let lastTimestamp = 0;
 let timestep = 10000 / 60;
-console.log(timestep);
 
 const renderLoop = timestamp => {
   animationId = requestAnimationFrame(renderLoop);
@@ -157,7 +155,8 @@ const renderLoop = timestamp => {
 
   lastTimestamp = timestamp;
 
-  fps.render();
+  const gol_fps = new Fps();
+  gol_fps.render();
   drawCells();
   drawGrid();
 };
