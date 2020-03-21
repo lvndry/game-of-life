@@ -10,8 +10,7 @@ use std::fmt;
 use wasm_bindgen::prelude::*;
 use web_sys::console;
 
-// When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
-// allocator.
+// When the `wee_alloc` feature is enabled, use `wee_alloc` as the global allocator.
 #[cfg(feature = "wee_alloc")]
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
@@ -92,6 +91,10 @@ impl Universe {
         }
     }
 
+    pub fn height(&self) -> u32 {
+        self.height
+    }
+
     pub fn set_height(&mut self, height: u32) {
         self.height = height;
         let size = (self.width * height) as usize;
@@ -101,10 +104,7 @@ impl Universe {
         }
     }
 
-    pub fn height(&self) -> u32 {
-        self.height
-    }
-
+    
     pub fn cells(&self) -> *const u32 {
         self.cells.as_slice().as_ptr()
     }
@@ -133,6 +133,7 @@ impl Universe {
     fn live_neighbor_count(&self, row: u32, column: u32) -> u8 {
         let mut count = 0;
 
+        // Actually faster than using modulo
         let north = if row == 0 { self.height - 1 } else { row - 1 };
 
         let south = if row == self.height - 1 { 0 } else { row + 1 };
