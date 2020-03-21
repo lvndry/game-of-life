@@ -27,7 +27,6 @@ impl Universe {
     pub fn new() -> Universe {
         let width = 120;
         let height = 120;
-
         let size = (width * height) as usize;
         let mut cells = FixedBitSet::with_capacity(size);
 
@@ -114,6 +113,20 @@ impl Universe {
         match self.cells[idx] {
             true => self.cells.set(idx, false),
             false => self.cells.set(idx, true),
+        }
+    }
+
+    pub fn randomize(&mut self) {
+        let size = (self.width * self.height) as usize;
+        for i in 0..size {
+            self.cells.set(i, Math::random() > 0.85);
+        }
+    }
+
+    pub fn blank(&mut self) {
+        let size = (self.height * self.width) as usize;
+        for i in 0..size {
+            self.cells.set(i, false);
         }
     }
 }
