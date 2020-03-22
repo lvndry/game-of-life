@@ -20,6 +20,7 @@ pub struct Universe {
     width: u32,
     height: u32,
     cells: FixedBitSet,
+    creation_rate: f64, // smaller type possible ?
 }
 
 #[wasm_bindgen]
@@ -27,17 +28,19 @@ impl Universe {
     pub fn new() -> Universe {
         let width = 120;
         let height = 120;
+        let creation_rate = 0.85;
         let size = (width * height) as usize;
         let mut cells = FixedBitSet::with_capacity(size);
 
         for i in 0..size {
-            cells.set(i, Math::random() > 0.5);
+            cells.set(i, Math::random() > creation_rate);
         }
 
         Universe {
             width,
             height,
             cells,
+            creation_rate,
         }
     }
 
@@ -60,7 +63,7 @@ impl Universe {
             for row in 0..self.height {
                 for col in 0..self.width {
                     let idx = self.get_index(row, col);
-                    let cell = self.cells[idx];
+                    let cell = self.cells[idx]; // use buffer
                     let live_neighbors = self.live_neighbor_count(row, col);
                     let next_cell = match (cell, live_neighbors) {
                         (true, x) if x < 2 => false,
@@ -69,7 +72,7 @@ impl Universe {
                         (false, 3) => true,
                         (otherwise, _) => otherwise,
                     };
-                    next.set(idx, next_cell);
+                    next.set(idx, next_cell); // use buffer
                 }
             }
         }
@@ -86,7 +89,7 @@ impl Universe {
         let size = (width * self.height) as usize;
         self.cells = FixedBitSet::with_capacity(size);
         for i in 0..size {
-            self.cells.set(i, Math::random() > 0.5);
+            self.cells.set(i, Math::random() > self.creation_rate);
         }
     }
 
@@ -99,11 +102,10 @@ impl Universe {
         let size = (self.width * height) as usize;
         self.cells = FixedBitSet::with_capacity(size);
         for i in 0..size {
-            self.cells.set(i, Math::random() > 0.5);
+            self.cells.set(i, Math::random() > self.creation_rate);
         }
     }
 
-    
     pub fn cells(&self) -> *const u32 {
         self.cells.as_slice().as_ptr()
     }
@@ -119,7 +121,7 @@ impl Universe {
     pub fn randomize(&mut self) {
         let size = (self.width * self.height) as usize;
         for i in 0..size {
-            self.cells.set(i, Math::random() > 0.85);
+            self.cells.set(i, Math::random() > self.creation_rate);
         }
     }
 
