@@ -3,5 +3,9 @@
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
+#[macro_use]
+extern crate serde_derive;
+
+#[macro_use]
 pub mod universe;
 mod utils;

@@ -1,12 +1,24 @@
-use crate::utils;
-
 extern crate fixedbitset;
 extern crate js_sys;
+
+use crate::utils;
 
 use fixedbitset::FixedBitSet;
 use js_sys::Math;
 use std::fmt;
 use wasm_bindgen::prelude::*;
+
+#[derive(Serialize)]
+pub struct Delta {
+    state: bool,
+    index: usize,
+}
+
+impl Delta {
+    pub fn new(state: bool, index: usize) -> Delta {
+        Delta { state, index }
+    }
+}
 
 #[wasm_bindgen]
 pub struct Universe {
@@ -14,16 +26,20 @@ pub struct Universe {
     height: u32,
     cells: FixedBitSet,
     creation_rate: f64, // smaller type possible ?
+    next_gen: Vec<Delta>,
 }
 
 #[wasm_bindgen]
 impl Universe {
     pub fn new() -> Universe {
         utils::set_panic_hook();
+
         let width = 120;
         let height = 120;
         let creation_rate = 0.85;
         let size = (width * height) as usize;
+        let next_gen = Vec::new();
+
         let mut cells = FixedBitSet::with_capacity(size);
 
         for i in 0..size {
@@ -35,6 +51,7 @@ impl Universe {
             height,
             cells,
             creation_rate,
+            next_gen,
         }
     }
 
@@ -48,6 +65,7 @@ impl Universe {
 
     pub fn tick(&mut self) {
         // let _timer = Timer::new("Universe::tick");
+        let mut deltas: Vec<Delta> = Vec::new();
         let mut next = {
             // let _timer = Timer::new("allocate next cells");
             self.cells.clone()
@@ -57,7 +75,7 @@ impl Universe {
             for row in 0..self.height {
                 for col in 0..self.width {
                     let idx = self.get_index(row, col);
-                    let cell = self.cells[idx]; // use buffer
+                    let cell = self.cells[idx];
                     let live_neighbors = self.live_neighbor_count(row, col);
                     let next_cell = match (cell, live_neighbors) {
                         (true, x) if x < 2 => false,
@@ -66,11 +84,21 @@ impl Universe {
                         (false, 3) => true,
                         (otherwise, _) => otherwise,
                     };
-                    next.set(idx, next_cell); // use buffer
+
+                    if next_cell != cell {
+                        deltas.push(Delta {
+                            state: next_cell,
+                            index: idx,
+                        });
+                    }
+
+                    next.set(idx, next_cell);
                 }
             }
         }
+
         // let _timer = Timer::new("free old cells");
+        self.next_gen = deltas;
         self.cells = next;
     }
 
@@ -104,6 +132,10 @@ impl Universe {
         self.cells.as_slice().as_ptr()
     }
 
+    pub fn next_gen(&self) -> JsValue {
+        JsValue::from_serde(&self.next_gen).unwrap()
+    }
+
     pub fn toggle_cell(&mut self, row: u32, col: u32) {
         let idx = self.get_index(row, col);
         match self.cells[idx] {
@@ -124,6 +156,8 @@ impl Universe {
         for i in 0..size {
             self.cells.set(i, false);
         }
+
+        self.next_gen = Vec::new();
     }
 }
 
